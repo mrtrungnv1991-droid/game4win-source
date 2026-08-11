@@ -1,8 +1,29 @@
 # Game4Win — Digital Commerce OS (ShopClone7 v6.3.8)
 
+![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-4479A1?logo=mysql&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-10.3%2B-003545?logo=mariadb&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 **Game4Win** là nền tảng **marketplace sản phẩm số** (Digital Commerce) xây dựng trên **ShopClone7 v6.3.8** — hệ thống bán Game Key, Gift Card, Account, Top Up với giao hàng tự động 24/7.
 
 > **Clean clone**: bản này đã được làm sạch — không chứa user data, transactions, products, orders của bản gốc (game4win.net / g2up.net).
+
+---
+
+## ⚡ Quick Start
+
+```bash
+# 1. Import database
+mysql -u root -p < database/schema_clean.sql
+
+# 2. Chạy local
+cd source
+php -S 127.0.0.1:8080 router.php
+
+# 3. Mở trình duyệt
+# http://127.0.0.1:8080
+```
 
 ---
 
@@ -42,7 +63,6 @@ game4win-clone/
 │   └── public/              # Assets: css, js, images, theme
 ├── database/
 │   └── schema_clean.sql     # Schema sạch: 64 tables + config data
-├── backups/                 # Backup SQL
 └── README.md
 ```
 
@@ -75,6 +95,8 @@ mysql -u root -p < database/schema_clean.sql
 cd source
 php -S 127.0.0.1:8080 router.php
 ```
+
+> 💡 **router.php là bắt buộc** khi dùng PHP built-in server — nó map friendly URLs (`/login`, `/admin`) sang `index.php?module=X&action=Y`. Không có nó, các route trả 404.
 
 ### 3. Deploy production
 - Upload `source/` lên hosting (Apache + mod_rewrite)
