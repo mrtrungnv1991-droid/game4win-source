@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameTopup — Nạp 121 Game iOS &amp; Android</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg-deep:#06060c;--bg-surface:#0d0d18;--bg-card:#111122;--bg-card-hover:#161630;--border-subtle:rgba(255,255,255,0.06);--border-glow:rgba(0,212,255,0.15);--text-primary:#f0f0f5;--text-secondary:#9ca3af;--text-muted:#6b7280;--accent-cyan:#00d4ff;--accent-purple:#7c3aed;--accent-gold:#f59e0b;--accent-green:#10b981;--accent-red:#ef4444;--gradient-primary:linear-gradient(135deg,#00d4ff,#7c3aed);--radius-sm:10px;--radius-md:16px;--radius-lg:24px;--radius-pill:9999px;--shadow-glow:0 0 30px rgba(0,212,255,0.08);--transition:0.25s cubic-bezier(0.4,0,0.2,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg-deep);color:var(--text-primary);line-height:1.6;min-height:100vh}
+body::before{content:"";position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(0,212,255,0.04) 0%,transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(124,58,237,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1300px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,6,12,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);padding:12px 0}
+.navbar .container{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:var(--text-primary);text-decoration:none;cursor:pointer}
+.nav-logo .icon{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:.95rem}
+.nav-links{display:flex;align-items:center;gap:24px;list-style:none}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.85rem;font-weight:500;transition:var(--transition);cursor:pointer}
+.nav-links a:hover{color:var(--text-primary)}
+.stats-bar{display:flex;gap:14px;flex-wrap:wrap;padding:90px 0 0;margin-bottom:8px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 18px;flex:1;min-width:140px}
+.stat-card .sv{font-size:1.4rem;font-weight:800}
+.stat-card .sl{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+.search-box{position:relative;max-width:400px;margin-bottom:14px}
+.search-box input{width:100%;padding:11px 14px 11px 40px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);background:var(--bg-surface);color:var(--text-primary);font-size:.88rem;outline:none}
+.search-box input:focus{border-color:var(--accent-cyan)}
+.search-box .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem}
+.cat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.cat-tab{padding:6px 15px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);background:transparent;color:var(--text-secondary);font-size:.78rem;cursor:pointer;transition:var(--transition);font-weight:500}
+.cat-tab:hover,.cat-tab.active{background:var(--gradient-primary);color:#fff;border-color:transparent}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;padding-bottom:40px}
+.game-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px 12px;cursor:pointer;transition:var(--transition);text-align:center;overflow:hidden}
+.game-card:hover{background:var(--bg-card-hover);border-color:var(--border-glow);transform:translateY(-2px);box-shadow:var(--shadow-glow)}
+.game-card .gi{font-size:2rem;margin-bottom:8px}
+.game-card .gn{font-size:.84rem;font-weight:600;color:var(--text-primary);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game-card .gc{font-size:.68rem;color:var(--text-muted)}
+.game-card .gcr{font-size:.65rem;color:var(--accent-gold);margin-top:4px}
+.balance-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius-pill);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--accent-green);font-size:.82rem;font-weight:600;cursor:pointer}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:26px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.modal h2{font-size:1.2rem;margin-bottom:2px}
+.modal .gs{color:var(--text-muted);font-size:.8rem;margin-bottom:16px}
+.tg{margin-bottom:14px}
+.tg h3{font-size:.78rem;color:var(--text-muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px}
+.ti{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border-subtle);margin-bottom:5px;cursor:pointer;transition:var(--transition)}
+.ti:hover,.ti.sel{border-color:var(--accent-cyan);background:rgba(0,212,255,0.05)}
+.ti .tl{font-weight:500;font-size:.83rem}
+.ti .tp{font-weight:700;font-size:.88rem;color:var(--accent-gold)}
+.if{width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border-subtle);background:var(--bg-card);color:var(--text-primary);font-size:.85rem;margin-bottom:9px;outline:none;font-family:inherit}
+.if:focus{border-color:var(--accent-cyan)}
+.bp{width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--gradient-primary);color:#fff;border:none;font-size:.93rem;font-weight:600;cursor:pointer;margin-top:4px}
+.bp:hover{opacity:0.9}
+.bp:disabled{opacity:0.5;cursor:not-allowed}
+.sm{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--text-muted);font-size:1.4rem;cursor:pointer}
+.history-panel{position:fixed;right:0;top:0;bottom:0;width:380px;max-width:90vw;background:var(--bg-surface);border-left:1px solid var(--border-subtle);z-index:150;transform:translateX(100%);transition:transform 0.3s ease;overflow-y:auto;padding:20px}
+.history-panel.show{transform:translateX(0)}
+.history-panel h3{font-size:1.05rem;margin-bottom:14px}
+.history-item{padding:11px;border-radius:var(--radius-sm);border:1px solid var(--border-subtle);margin-bottom:7px;font-size:.8rem}
+.history-item .ht{font-weight:600;margin-bottom:2px}
+.history-item .hd{color:var(--text-muted);font-size:.73rem}
+.history-item .hs{font-weight:600;margin-top:2px}
+.hs-success{color:#10b981}.hs-failed{color:#ef4444}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:13px 22px;border-radius:var(--radius-sm);font-weight:600;font-size:.88rem;animation:slideIn 0.3s ease;max-width:90vw;text-align:center;pointer-events:none}
+.toast-success{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
+.toast-error{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#ef4444}
+@keyframes slideIn{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@media(max-width:640px){.games-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.stat-card{min-width:100px}}
+</style>
+</head>
+<body>
+<nav class="navbar"><div class="container">
+<a class="nav-logo" onclick="location.reload()"><span class="icon">🎮</span>GameTopup</a>
+<ul class="nav-links"><li><a onclick="showHistory()">📋 Lịch sử đơn</a></li><li><a onclick="addBalance()">💰 Nạp ví</a></li><li><a href="admin.html" style="color:#f59e0b">⚙️ Admin</a></li></ul>
+<span class="balance-badge" id="balance" onclick="addBalance()">💰 500,000đ</span>
+</div></nav>
+<div class="container">
+<div class="stats-bar">
+<div class="stat-card"><div class="sv" id="total-games">121</div><div class="sl">Games hỗ trợ</div></div>
+<div class="stat-card"><div class="sv" id="total-orders">0</div><div class="sl">Đơn hôm nay</div></div>
+<div class="stat-card"><div class="sv" style="color:var(--accent-gold)" id="total-spent">0đ</div><div class="sl">Đã chi tiêu</div></div>
+<div class="stat-card"><div class="sv" style="color:var(--accent-cyan)" id="cat-count">6</div><div class="sl">Thể loại</div></div>
+</div>
+<div class="search-box"><span class="si">🔍</span><input type="text" id="search" placeholder="Tìm game... (VD: Shadow, Stickman, Idle)" oninput="filterGames()"></div>
+<div class="cat-tabs" id="cats"><button class="cat-tab active" onclick="filterByCat('')">Tất cả</button></div>
+<div class="games-grid" id="grid"></div>
+</div>
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+<div class="modal"><button class="sm" onclick="closeModal()">✕</button>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="mg-icon" style="font-size:2rem"></span><div><h2 id="mg-name"></h2><span class="gs" id="mg-sub"></span></div></div>
+<div id="mg-tiers"></div>
+<input type="text" id="mg-uid" class="if" placeholder="🎯 Nhập ID người chơi (Game UID)...">
+<input type="text" id="mg-coupon" class="if" placeholder="🏷️ Mã giảm giá (DEMO10 = -10%)">
+<button class="bp" id="btn-submit" disabled onclick="submitOrder()">Xác nhận nạp</button></div></div>
+<div class="history-panel" id="history-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3>📋 Lịch sử đơn</h3><button class="sm" onclick="closeHistory()" style="position:static">✕</button></div><div id="history-list"><p style="color:var(--text-muted);font-size:.82rem">Chưa có đơn nào</p></div></div>
+<script src="games_data.js"></script>
+<script>
+var STORAGE_KEY="gametopup_full";
+var state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"balance":500000,"orders":[],"totalSpent":0,"orderCount":0}');
+var GAMES=GAMES_DATA;
+var currentGame=null,selectedTier=null;
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));updateUI()}
+function updateUI(){document.getElementById("balance").textContent="💰 "+state.balance.toLocaleString()+"đ";document.getElementById("total-orders").textContent=state.orderCount;document.getElementById("total-spent").textContent=state.totalSpent.toLocaleString()+"đ"}
+function renderGames(games){document.getElementById("grid").innerHTML=games.map(function(g){return '<div class="game-card" onclick="openGame('+g.id+')"><div class="gi">'+(g.icon||"🎮")+"</div><div class=\"gn\" title=\""+g.name.replace(/"/g,'&quot;')+'">'+g.name+"</div><div class=\"gc\">"+(g.cat||"")+"</div><div class=\"gcr\">"+(g.currencyName||"")+" "+(g.currencyUnit||"")+"</div></div>"}).join("")}
+(function initCats(){var cats={};GAMES.forEach(function(g){var c=g.cat||"Other";cats[c]=(cats[c]||0)+1});var sorted=Object.entries(cats).sort(function(a,b){return b[1]-a[1]});sorted.forEach(function(pair){var btn=document.createElement("button");btn.className="cat-tab";btn.textContent=pair[0]+" ("+pair[1]+")";btn.onclick=function(){document.querySelectorAll(".cat-tab").forEach(function(b){b.classList.remove("active")});this.classList.add("active");filterByCat(pair[0])};document.getElementById("cats").appendChild(btn)})})();
+function filterByCat(cat){renderGames(cat?GAMES.filter(function(g){return g.cat===cat}):GAMES)}
+function filterGames(){var q=document.getElementById("search").value.trim().toLowerCase();if(q.length<2){renderGames(GAMES);return}renderGames(GAMES.filter(function(g){return g.name.toLowerCase().indexOf(q)>=0||(g.fullName||"").toLowerCase().indexOf(q)>=0}))}
+function openGame(id){currentGame=GAMES.find(function(g){return g.id===id});if(!currentGame)return;selectedTier=null;document.getElementById("mg-icon").textContent=currentGame.icon||"🎮";document.getElementById("mg-name").textContent=currentGame.name;document.getElementById("mg-sub").textContent=(currentGame.currencyName||"")+" "+(currentGame.currencyUnit||"");var html="";["gem","pack","allpack"].forEach(function(type){var tiers=currentGame[type];if(!tiers||!tiers.length)return;var titles={gem:"💎 In-game Currency",pack:"🎫 Battle Pass & Gói Tháng",allpack:"🎁 Combo Pack"};html+='<div class="tg"><h3>'+titles[type]+"</h3>";tiers.forEach(function(t){html+='<div class="ti" onclick="selectTier(this)" data-vnd="'+t.vnd+'" data-label="'+t.label+'"><span class="tl">'+t.label+"</span><span class=\"tp\">"+t.vnd.toLocaleString()+"đ</span></div>"});html+="</div>"});document.getElementById("mg-tiers").innerHTML=html;document.getElementById("mg-uid").value="";document.getElementById("mg-coupon").value="";document.getElementById("btn-submit").disabled=true;document.getElementById("modal-overlay").classList.add("show")}
+function selectTier(el){document.querySelectorAll(".ti").forEach(function(i){i.classList.remove("sel")});el.classList.add("sel");selectedTier={label:el.dataset.label,vnd:parseInt(el.dataset.vnd)};document.getElementById("btn-submit").disabled=false}
+function closeModal(){document.getElementById("modal-overlay").classList.remove("show");currentGame=null;selectedTier=null}
+function submitOrder(){if(!selectedTier||!currentGame)return;var uid=document.getElementById("mg-uid").value.trim();if(!uid)return toast("Vui lòng nhập ID người chơi","error");if(uid.length<3)return toast("ID quá ngắn","error");var price=selectedTier.vnd;var coupon=document.getElementById("mg-coupon").value.trim().toUpperCase();if(coupon==="DEMO10"){price=Math.floor(price*0.9);toast("🎉 DEMO10: -10%","success")}else if(coupon){toast("Mã không hợp lệ","error");return}if(state.balance<price)return toast("Không đủ tiền! Cần "+price.toLocaleString()+"đ","error");state.balance-=price;state.totalSpent+=price;state.orderCount++;state.orders.unshift({id:"TOPUP"+Date.now().toString(36).toUpperCase(),game:currentGame.name,tier:selectedTier.label,uid:uid,price:price,status:"success",time:new Date().toLocaleString("vi-VN")});if(state.orders.length>50)state.orders=state.orders.slice(0,50);save();closeModal();toast("✅ "+currentGame.name+" — "+selectedTier.label+" ("+price.toLocaleString()+"đ)","success")}
+function showHistory(){var list=document.getElementById("history-list");if(!state.orders.length)list.innerHTML='<p style="color:var(--text-muted);font-size:.82rem">Chưa có đơn nào</p>';else list.innerHTML=state.orders.map(function(o){return '<div class="history-item"><div class="ht">'+o.game+'</div><div class="hd">'+o.tier+" | UID: "+o.uid+"</div><div class=\"hd\">"+o.time+"</div><div class=\"hs hs-success\">"+o.price.toLocaleString()+"đ — ✅ Thành công</div></div>"}).join("");document.getElementById("history-panel").classList.add("show")}
+function closeHistory(){document.getElementById("history-panel").classList.remove("show")}
+function addBalance(){var amt=prompt("💰 Nhập số tiền muốn nạp (demo):","500000");if(!amt||isNaN(amt)||parseInt(amt)<=0)return;state.balance+=parseInt(amt);save();toast("💰 Đã nạp "+parseInt(amt).toLocaleString()+"đ","success")}
+function toast(msg,type){var el=document.createElement("div");el.className="toast toast-"+type;el.textContent=msg;document.body.appendChild(el);setTimeout(function(){el.style.opacity="0";el.style.transition="opacity 0.3s"},2200);setTimeout(function(){el.remove()},2600)}
+renderGames(GAMES);updateUI();
+</script>
+</body>
+</html>

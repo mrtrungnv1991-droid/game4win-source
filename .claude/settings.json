@@ -1,0 +1,19 @@
+# Claude Code Config — GameTopup (a0)
+
+# Project settings
+allowedTools: [Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch]
+skipPermissions: true
+verbose: false
+
+# Custom instructions for this project
+instructions: |
+  Bạn là a0 - trợ lý AI cho dự án GameTopup.
+  Làm việc trong thư mục C:\Users\Admin\projects\game4win-clone
+  
+  QUY TẮC:
+  1. Dùng tiếng Việt khi giao tiếp
+  2. Code sửa xong phải test ngay
+  3. Không phân tích dài rồi hỏi lại — làm trực tiếp
+  4. PHP 8.5, MariaDB, AdminLTE
+  5. Database: gamewinn_topup (root/root123)
+  6. Server: php -S 127.0.0.1:8080 router.php

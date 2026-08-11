@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment & secrets
+.env
+.env.*
+!config.php
+
+# Backups & archives
+backups/
+*.zip
+*.sql.bak
+
+# Logs
+*.log
+error_log
+tmp/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+*.orig
+*.rej
+
+# Duplicate/stray folders
+New folder/
+
+# Uploads cache (user data)
+uploads/
