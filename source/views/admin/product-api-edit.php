@@ -56,11 +56,12 @@ if (isset($_POST['save'])) {
         }
 
         $data = balance_API_SHOPCLONE6(check_string($_POST['domain']), check_string($_POST['username']), check_string($_POST['password']), check_string($_POST['proxy']));
-        $price = $data;
         $data = json_decode($data, true);
-        if (isset($data['status']) && $data['status'] == 'error') {
-            die('<script type="text/javascript">if(!alert("' . $data['msg'] . '")){window.history.back().location.reload();}</script>');
+        if (!is_array($data) || (isset($data['status']) && $data['status'] == 'error')) {
+            $errMsg = (is_array($data) && isset($data['msg'])) ? $data['msg'] : __('Kết nối đến API không thành công!');
+            die('<script type="text/javascript">if(!alert("' . addslashes($errMsg) . '")){window.history.back().location.reload();}</script>');
         }
+        $price = isset($data['data']['money']) ? format_currency((float)$data['data']['money']) : $data;
     } else if ($type == 'SHOPKEY') {
         if (empty($_POST['api_key'])) {
             die('<script type="text/javascript">if(!alert("Vui lòng nhập API Key")){window.history.back().location.reload();}</script>');
@@ -164,11 +165,12 @@ if (isset($_POST['save'])) {
         }
         $password = check_string($_POST['password']);
         $data = balance_API_17(check_string($_POST['domain']), $username, $password);
-        $price = $data;
         $data = json_decode($data, true);
-        if (isset($data['status']) && $data['status'] == 'error') {
-            die('<script type="text/javascript">if(!alert("' . $data['msg'] . '")){window.history.back().location.reload();}</script>');
+        if (!is_array($data) || (isset($data['status']) && $data['status'] == 'error')) {
+            $errMsg = (is_array($data) && isset($data['msg'])) ? $data['msg'] : __('Kết nối đến API không thành công!');
+            die('<script type="text/javascript">if(!alert("' . addslashes($errMsg) . '")){window.history.back().location.reload();}</script>');
         }
+        $price = isset($data['data']['money']) ? format_currency((float)$data['data']['money']) : $data;
     } else if ($type == 'API_18') {
         $result = balance_API_18(check_string($_POST['domain']), check_string($_POST['api_key']));
         $result = json_decode($result, true);
@@ -759,7 +761,7 @@ if (isset($_POST['save'])) {
                                                 </label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-light"><i class="fas fa-coins"></i></span>
-                                                    <textarea class="form-control shadow-sm" id="balance" readonly><?= $supplier['price']; ?></textarea>
+                                                    <textarea class="form-control shadow-sm" id="balance" readonly><?= $supplier['price'] != NULL ? (is_array(json_decode($supplier['price'], true)) ? format_supplier_balance($supplier['price']) : $supplier['price']) : ''; ?></textarea>
                                                 </div>
                                             </div>
                                         </div>

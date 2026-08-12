@@ -1415,6 +1415,28 @@ function balance_API_SHOPCLONE6($domain, $username, $password, $proxy = '')
 
     return file_get_contents($url, false, stream_context_create($opts));
 }
+/**
+ * Chuyển response balance API về chuỗi tiền đã format.
+ * Trước đây code gán thẳng response JSON ({"status":"success","data":{"money":0}})
+ * vào cột suppliers.price -> ô "Số dư" hiển thị raw JSON thay vì số tiền.
+ */
+function format_supplier_balance($raw)
+{
+    if (!is_string($raw)) {
+        return $raw;
+    }
+    $decoded = json_decode($raw, true);
+    if (!is_array($decoded)) {
+        return $raw; // Đã là chuỗi tiền bình thường (không phải JSON) thì giữ nguyên
+    }
+    if (isset($decoded['data']['money'])) {
+        return format_currency((float)$decoded['data']['money']);
+    }
+    if (isset($decoded['balance'])) {
+        return format_currency((float)$decoded['balance']);
+    }
+    return $raw;
+}
 function getOrder_API_14($domain, $token, $order_id)
 {
     $curl = curl_init();

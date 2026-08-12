@@ -29,6 +29,7 @@
     foreach($CMSNT->get_list_safe(" SELECT * FROM `suppliers` WHERE `status` = ? AND `type` = ? ", [1, 'SHOPCLONE6']) as $supplier){
         // CẬP NHẬT SỐ DƯ API
         $getPrice = balance_API_SHOPCLONE6($supplier['domain'], $supplier['username'], $supplier['password'], $supplier['proxy']);
+        $getPrice = format_supplier_balance($getPrice);
         $CMSNT->update('suppliers', [
             'price' => $getPrice,
             'update_gettime'    => gettime()

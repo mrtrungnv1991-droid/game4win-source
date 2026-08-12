@@ -460,7 +460,7 @@ $don_hang = $CMSNT->get_row(" SELECT COUNT(id) FROM product_order WHERE `refund`
                                                 <span class="badge bg-primary"><?= $supplier['type']; ?></span>
                                             </td>
                                             <td class="text-right">
-                                                <?= check_string($supplier['price']); ?>
+                                                <?= check_string(format_supplier_balance($supplier['price'])); ?>
                                             </td>
                                             <td>
                                                 <?php
