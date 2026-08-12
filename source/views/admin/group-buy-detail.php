@@ -32,7 +32,7 @@ require_once(__DIR__ . '/sidebar.php');
             <div class="card-header"><strong>📋 Deal Info</strong></div>
             <div class="card-body">
                 <table class="table table-sm">
-                    <tr><td>Status</td><td><span class="badge bg-<?= match($deal['status']){'active'=>'primary','filled'=>'warning','completed'=>'success','cancelled'=>'secondary',default:'dark'} ?>"><?= $deal['status'] ?></span></td></tr>
+                    <tr><td>Status</td><td><span class="badge bg-<?= match($deal['status']){'active'=>'primary','filled'=>'warning','completed'=>'success','cancelled'=>'secondary',default=>'dark'} ?>"><?= $deal['status'] ?></span></td></tr>
                     <tr><td>Type</td><td><?= $deal['product_type'] ?></td></tr>
                     <tr><td>Original</td><td>$<?= number_format($deal['original_price'],2) ?></td></tr>
                     <tr><td>Group Price</td><td class="text-success fw-bold">$<?= number_format($deal['group_price'],2) ?></td></tr>
