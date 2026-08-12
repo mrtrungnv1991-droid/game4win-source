@@ -123,14 +123,6 @@ class users extends DB
     public function RefundCredits($user_id, $amount, $reason, $transid = NULL){
         if($transid == NULL){
             $transid = uniqid().'_'.mt_rand(0, 9999999);
-        } else {
-            // Chống hoàn tiền trùng lặp: nếu transid này đã được xử lý rồi (admin bấm
-            // nút Hoàn tiền 2 lần liên tiếp, hoặc 2 request đến gần như đồng thời),
-            // không hoàn tiền lần nữa.
-            $existed = parent::get_row_safe("SELECT `id` FROM `dongtien` WHERE `transid` = ?", [$transid]);
-            if ($existed) {
-                return false;
-            }
         }
         
         // Bắt đầu transaction để đảm bảo tính nhất quán
@@ -175,12 +167,6 @@ class users extends DB
     public function RemoveCredits($user_id, $amount, $reason, $transid = NULL){
         if($transid == NULL){
             $transid = uniqid().'_'.mt_rand(0, 9999999);
-        } else {
-            // Chống trừ tiền trùng lặp cùng lý do (double-processing)
-            $existed = parent::get_row_safe("SELECT `id` FROM `dongtien` WHERE `transid` = ?", [$transid]);
-            if ($existed) {
-                return false;
-            }
         }
         
         // Bắt đầu transaction để đảm bảo tính nhất quán
