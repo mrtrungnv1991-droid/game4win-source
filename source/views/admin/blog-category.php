@@ -101,6 +101,7 @@ else{
 }
 $from = ($page - 1) * $limit;
 $where = " `id` > 0 ";
+$params = [];
 $category = '';
 $create_gettime = '';
 $name = '';
@@ -109,7 +110,8 @@ $shortByDate  = '';
  
 if(!empty($_GET['name'])){
     $name = check_string($_GET['name']);
-    $where .= ' AND `name` LIKE "%'.$name.'%" ';
+    $where .= ' AND `name` LIKE ? ';
+    $params[] = '%'.$name.'%';
 }
 if(!empty($_GET['create_gettime'])){
     $create_date = check_string($_GET['create_gettime']);
@@ -119,7 +121,9 @@ if(!empty($_GET['create_gettime'])){
 
     if($create_date_1[0] != $create_date_1[1]){
         $create_date_1 = [$create_date_1[0].' 00:00:00', $create_date_1[1].' 23:59:59'];
-        $where .= " AND `create_gettime` >= '".$create_date_1[0]."' AND `create_gettime` <= '".$create_date_1[1]."' ";
+        $where .= " AND `create_gettime` >= ? AND `create_gettime` <= ? ";
+        $params[] = $create_date_1[0];
+        $params[] = $create_date_1[1];
     }
 }
 if(isset($_GET['shortByDate'])){
@@ -130,18 +134,23 @@ if(isset($_GET['shortByDate'])){
     $currentYear = date('Y');
     $currentDate = date("Y-m-d");
     if($shortByDate == 1){
-        $where .= " AND `create_gettime` LIKE '%".$currentDate."%' ";
+        $where .= " AND `create_gettime` LIKE ? ";
+        $params[] = '%'.$currentDate.'%';
     }
     if($shortByDate == 2){
-        $where .= " AND YEAR(create_gettime) = $currentYear AND WEEK(create_gettime, 1) = $currentWeek ";
+        $where .= " AND YEAR(create_gettime) = ? AND WEEK(create_gettime, 1) = ? ";
+        $params[] = $currentYear;
+        $params[] = $currentWeek;
     }
     if($shortByDate == 3){
-        $where .= " AND MONTH(create_gettime) = '$currentMonth' AND YEAR(create_gettime) = '$currentYear' ";
+        $where .= " AND MONTH(create_gettime) = ? AND YEAR(create_gettime) = ? ";
+        $params[] = $currentMonth;
+        $params[] = $currentYear;
     }
 }
 
-$listDatatable = $CMSNT->get_list(" SELECT * FROM `post_category` WHERE $where ORDER BY `id` DESC LIMIT $from,$limit ");
-$totalDatatable = $CMSNT->num_rows(" SELECT * FROM `post_category` WHERE $where ORDER BY id DESC ");
+$listDatatable = $CMSNT->get_list_safe(" SELECT * FROM `post_category` WHERE $where ORDER BY `id` DESC LIMIT $from,$limit ", $params);
+$totalDatatable = $CMSNT->num_rows_safe(" SELECT * FROM `post_category` WHERE $where ORDER BY id DESC ", $params);
 $urlDatatable = pagination(base_url_admin("blog-category&limit=$limit&shortByDate=$shortByDate&name=$name&create_gettime=$create_gettime&"), $from, $totalDatatable, $limit);
 
 

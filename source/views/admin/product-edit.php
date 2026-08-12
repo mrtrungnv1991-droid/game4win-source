@@ -26,7 +26,7 @@ $(function () {
 require_once(__DIR__ . '/../../models/is_admin.php');
 if (isset($_GET['id'])) {
     $id = check_string($_GET['id']);
-    if (!$product = $CMSNT->get_row("SELECT * FROM `products` WHERE `id` = '$id' ")) {
+    if (!$product = $CMSNT->get_row_safe("SELECT * FROM `products` WHERE `id` = ? ", [$id])) {
         redirect(base_url_admin('products'));
     }
 } else {

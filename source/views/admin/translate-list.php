@@ -94,7 +94,7 @@ $body['footer'] = '
 require_once(__DIR__ . '/../../models/is_admin.php');
 if (isset($_GET['id'])) {
     $id = check_string($_GET['id']);
-    $row = $CMSNT->get_row("SELECT * FROM `languages` WHERE `id` = '$id' ");
+    $row = $CMSNT->get_row_safe("SELECT * FROM `languages` WHERE `id` = ? ", [$id]);
     if (!$row) {
         redirect(base_url_admin('language-list'));
     }
